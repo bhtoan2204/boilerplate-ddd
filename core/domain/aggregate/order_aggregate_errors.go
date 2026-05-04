@@ -1,0 +1,25 @@
+package aggregate
+
+import "errors"
+
+var (
+	ErrOrderItemExists        = errors.New("order item already in another shipment")
+	ErrNilData                = errors.New("provided data is nil")
+	ErrSkuEmpty               = errors.New("sku is empty")
+	ErrShipmentEmpty          = errors.New("shipment must have at least one sku")
+	ErrOrderItemInvalidQty    = errors.New("order item quantity must be greater than zero")
+	ErrShipmentItemInvalidQty = errors.New("shipment item quantity must be greater than zero")
+	ErrSkuNotBelongToOrder    = errors.New("sku does not belong to order")
+	ErrShipmentQtyExceeded    = errors.New("shipment quantity exceeds ordered quantity")
+	ErrShipmentIDEmpty        = errors.New("shipment id is empty")
+	ErrShipmentIDExists       = errors.New("shipment id already exists")
+	ErrTrackingNoEmpty        = errors.New("tracking number is empty")
+	ErrTrackingNoExists       = errors.New("tracking number already exists")
+	ErrInvalidShipmentStatus  = errors.New("invalid shipment status")
+	ErrFromAddressEmpty       = errors.New("from address is empty")
+	ErrToAddressEmpty         = errors.New("to address is empty")
+	ErrSameShipmentAddress    = errors.New("from address and to address must be different")
+	ErrOrderNotPaid           = errors.New("order is not paid")
+	ErrOrderCannotBeShipped   = errors.New("order cannot be shipped")
+	ErrShipmentTimeInvalid    = errors.New("shipment time is invalid")
+)
