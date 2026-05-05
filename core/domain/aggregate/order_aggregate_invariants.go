@@ -6,13 +6,9 @@ import (
 	"time"
 )
 
-func (agg *OrderAggregate) CreateShipment(data *EventCreateShipment) error {
+func (agg *OrderAggregate) applyShipmentCreated(data *EventShipmentCreated) error {
 	if data == nil {
 		return ErrNilData
-	}
-
-	if err := agg.checkShipmentInvariants(data.SKUs); err != nil {
-		return err
 	}
 
 	newShipment := entity.Shipment{
@@ -29,6 +25,62 @@ func (agg *OrderAggregate) CreateShipment(data *EventCreateShipment) error {
 	}
 
 	agg.shipments = append(agg.shipments, newShipment)
+
+	return nil
+}
+
+func (agg *OrderAggregate) applyItemAdded(data *EventItemAdded) error {
+	if data == nil {
+		return ErrNilData
+	}
+
+	agg.orderItems = append(agg.orderItems, data.Item)
+
+	return nil
+}
+
+func (agg *OrderAggregate) applyItemRemoved(data *EventItemRemoved) error {
+	if data == nil {
+		return ErrNilData
+	}
+
+	for i, item := range agg.orderItems {
+		if item.ID == data.ItemID {
+			agg.orderItems = append(agg.orderItems[:i], agg.orderItems[i+1:]...)
+			break
+		}
+	}
+
+	return nil
+}
+
+func (agg *OrderAggregate) applyPaymentMade(data *EventPaymentMade) error {
+	if data == nil {
+		return ErrNilData
+	}
+
+	agg.payments = append(agg.payments, data.Payment)
+	agg.Status = OrderStatusPaid
+
+	return nil
+}
+
+func (agg *OrderAggregate) applyOrderCancelled(data *EventOrderCancelled) error {
+	if data == nil {
+		return ErrNilData
+	}
+
+	agg.Status = OrderStatusCancelled
+
+	return nil
+}
+
+func (agg *OrderAggregate) applyOrderCompleted(data *EventOrderCompleted) error {
+	if data == nil {
+		return ErrNilData
+	}
+
+	agg.Status = OrderStatusCompleted
 
 	return nil
 }
